@@ -8,7 +8,7 @@ app=Flask(__name__)
 
 #Below is sign up route
 @app.route("/api/signup",methods=["POST"])
-@app.route("/signup", methods=["POST"])
+# @app.route("/signup", methods=["POST"])
 def signup():
     if request.method == "POST":
         username = request.form["username"]
@@ -38,6 +38,36 @@ def signup():
 
         return jsonify({"message": "User registered successfully"})
 
+#Below is login /sign in route
+@app.route("/api/signin", methods=["post"])
+def signin():
+    if request.method=="POST":
+        # return jsonify({"message": "signin route accessed"})
+    #extract the two details entered on the form
+     email=request.form["email"]
+     password=request.form["password"]
+    # print out the details
+    # print(email,password)
+    # create/establish a connection to the database
+    connection=pymysql.connect(host="localhost",user="root",password="",database="test" )
+    #create a cursor
+    cursor=connection.cursor(pymysql.cursors.DictCursor)
+    #structure the sql query will check whether the email and the password entered are correct
+    sql="SELECT * FROM users WHERE email = %s AND password = %s"
+    #put the data received from the form into tuple
+    data=(email,password)
+    #by use of the cursor execute the sql
+    cursor.execute(sql,data)
+    #if 
+    count=cursor.rowcount
+    # print (count)
+    if count==0:
+        return jsonify({"message":"login failed"})
+    else:
+    #there must be a user so we create a variable that will hold the detail of the user fetches from the database
+        user=cursor.fetchone()
+    #Return the detail to the frontend as well as a message
+        return jsonify({"message":"user logged in Successfully","user":user})
 
 
 #run the application
