@@ -1,3 +1,2 @@
 # sokogardenAPI
-# sokogardenAPI
-# hhhhgl
+# product_details
